@@ -1,24 +1,24 @@
 // ---------- Insert Your Data ---------- //
 
-const BOT_TOKEN = "7971562001:AAEWwap92tO6FVJjwJyltcFll5crST8CdPY"; // Insert your bot token.
-const BOT_WEBHOOK = "/endpoint"; // Let it be as it is.
-const BOT_SECRET = "BOT_SECRET"; // Insert a powerful secret text.
-const BOT_OWNER = 0064350805; // Insert your telegram account id.
-const BOT_CHANNEL = -10020358474134; // Insert your telegram channel id which the bot is admin in.
-const SIA_NUMBER = 1234; // Insert a random integer number and keep it safe.
+const BOT_TOKEN = "09814685583:AAH_nJs7-OKiFuHkYedfhrQV5LjkCB5g";
+const BOT_WEBHOOK = "/endpoint";
+const BOT_SECRET = "BOT_SECRET";
+const BOT_OWNER = 0064350805;
+const BOT_CHANNEL = -10020358474134;
+const SIA_NUMBER = 1234;
 
-// ----------Ohh Bhai Do Not Modify ---------- // 
+// ----------Ohh Bhai Do Not Modify ---------- //
 
 const WHITE_METHODS = ["GET", "POST", "HEAD"];
 const HEADERS_FILE = {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type"};
 const HEADERS_ERRR = {'Access-Control-Allow-Origin': '*', 'content-type': 'application/json'};
-const ERROR_404 = {"ok":false,"error_code":404,"description":"Bad Request: missing /?file= parameter", "credit": "https://t.me/Opleech_WD"};
+const ERROR_404 = {"ok":false,"error_code":404,"description":"Bad Request: missing /?file= parameter"};
 const ERROR_405 = {"ok":false,"error_code":405,"description":"Bad Request: method not allowed"};
 const ERROR_406 = {"ok":false,"error_code":406,"description":"Bad Request: file type invalid"};
 const ERROR_407 = {"ok":false,"error_code":407,"description":"Bad Request: file hash invalid by atob"};
 const ERROR_408 = {"ok":false,"error_code":408,"description":"Bad Request: mode not in [attachment, inline]"};
 
-// ---------- Event Listener ---------- // 
+// ---------- Event Listener ---------- //
 
 addEventListener('fetch', event => {
     event.respondWith(handleRequest(event));
@@ -28,7 +28,7 @@ async function handleRequest(event) {
     const url = new URL(event.request.url);
     const file = url.searchParams.get('file');
     const mode = url.searchParams.get('mode') || "attachment";
-     
+
     if (url.pathname === BOT_WEBHOOK) {return handleWebhook(event);}
     if (url.pathname === '/registerWebhook') {return registerWebhook(event, url, BOT_WEBHOOK, BOT_SECRET);}
     if (url.pathname === '/unregisterWebhook') {return unregisterWebhook(event);}
@@ -52,7 +52,7 @@ async function handleRequest(event) {
 
     return new Response(rdata, {
         status: 200, headers: {
-            "Content-Disposition": `${mode}; filename=${rname}`, // inline;
+            "Content-Disposition": `${mode}; filename=${rname}`,
             "Content-Length": rsize,
             "Content-Type": rtype,
             ...HEADERS_FILE
@@ -63,10 +63,11 @@ async function handleRequest(event) {
 // ---------- Retrieve File ---------- //
 
 async function RetrieveFile(channel_id, message_id) {
-    let  fID; let fName; let fType; let fSize; let fLen;
+    let fID, fName, fType, fSize, fLen;
+
     let data = await editMessage(channel_id, message_id, await UUID());
     if (data.error_code) {return data;}
-    
+
     if (data.document) {
         fLen = data.document.length - 1;
         fID = data.document.file_id;
@@ -116,7 +117,7 @@ async function UUID() {
     });
 }
 
-// ---------- Telegram Webhook ---------- // 
+// ---------- Telegram Webhook ---------- //
 
 async function handleWebhook(event) {
     if (event.request.headers.get('X-Telegram-Bot-Api-Secret-Token') !== BOT_SECRET) {
@@ -147,48 +148,44 @@ async function getMe() {
 }
 
 async function sendMessage(chat_id, reply_id, text) {
-    const response = await fetch(apiUrl('sendMessage', {chat_id: chat_id, reply_to_message_id: reply_id, parse_mode: 'markdown', text}));
+    const response = await fetch(apiUrl('sendMessage', {chat_id, reply_to_message_id: reply_id, parse_mode: 'markdown', text}));
     if (response.status == 200) {return (await response.json()).result;}
     else {return await response.json();}
 }
 
-// New function to send messages with buttons
 async function sendMessageWithButtons(chat_id, reply_id, text, reply_markup) {
     const response = await fetch(apiUrl('sendMessage', {
-        chat_id: chat_id,
+        chat_id,
         reply_to_message_id: reply_id,
         parse_mode: 'markdown',
         text,
-        reply_markup: JSON.stringify(reply_markup) // convert to JSON
+        reply_markup: JSON.stringify(reply_markup)
     }));
-    
-    if (response.status == 200) {
-        return (await response.json()).result;
-    } else {
-        return await response.json();
-    }
+
+    if (response.status == 200) {return (await response.json()).result;}
+    else {return await response.json();}
 }
 
 async function sendDocument(chat_id, file_id) {
-    const response = await fetch(apiUrl('sendDocument', {chat_id: chat_id, document: file_id}));
+    const response = await fetch(apiUrl('sendDocument', {chat_id, document: file_id}));
     if (response.status == 200) {return (await response.json()).result;}
     else {return await response.json();}
 }
 
 async function sendPhoto(chat_id, file_id) {
-    const response = await fetch(apiUrl('sendPhoto', {chat_id: chat_id, photo: file_id}));
+    const response = await fetch(apiUrl('sendPhoto', {chat_id, photo: file_id}));
     if (response.status == 200) {return (await response.json()).result;}
     else {return await response.json();}
 }
 
 async function editMessage(channel_id, message_id, caption_text) {
-    const response = await fetch(apiUrl('editMessageCaption', {chat_id: channel_id, message_id: message_id, caption: caption_text}));
+    const response = await fetch(apiUrl('editMessageCaption', {chat_id: channel_id, message_id, caption: caption_text}));
     if (response.status == 200) {return (await response.json()).result;}
     else {return await response.json();}
 }
 
 async function getFile(file_id) {
-    const response = await fetch(apiUrl('getFile', {file_id: file_id}));
+    const response = await fetch(apiUrl('getFile', {file_id}));
     if (response.status == 200) {return (await response.json()).result;}
     else {return await response.json();}
 }
@@ -211,17 +208,19 @@ async function onUpdate(event, update) {
 }
 
 async function onMessage(event, message) {
-    let fID; let fName; let fSave; let fType;
+    let fID, fName, fSave, fType, fSize;
     let url = new URL(event.request.url);
     let bot = await getMe();
 
-    if (message.chat.id.toString().includes("-100")) {
-        return;
-    }
+    if (message.chat.id.toString().includes("-100")) return;
+
+    // ---------- /start HASH ---------- //
 
     if (message.text && message.text.startsWith("/start ")) {
         const file = message.text.split("/start ")[1];
-        try { atob(file); } catch { return await sendMessage(message.chat.id, message.message_id, ERROR_407.description); }
+        try { atob(file); } catch {
+            return await sendMessage(message.chat.id, message.message_id, ERROR_407.description);
+        }
 
         const file_path = atob(file);
         const channel_id = parseInt(file_path.split('/')[0]) / -SIA_NUMBER;
@@ -230,57 +229,84 @@ async function onMessage(event, message) {
 
         if (data.document) {
             fID = data.document.file_id;
-            return await sendDocument(message.chat.id, fID);
+            fSize = data.document.file_size;
         } else if (data.audio) {
             fID = data.audio.file_id;
-            return await sendDocument(message.chat.id, fID);
+            fSize = data.audio.file_size;
         } else if (data.video) {
             fID = data.video.file_id;
-            return await sendDocument(message.chat.id, fID);
+            fSize = data.video.file_size;
         } else if (data.photo) {
-            fID = data.photo[data.photo.length - 1].file_id;
-            return await sendPhoto(message.chat.id, fID);
+            const last = data.photo[data.photo.length - 1];
+            fID = last.file_id;
+            fSize = last.file_size;
         } else {
             return sendMessage(message.chat.id, message.message_id, "Bad Request: File not found");
         }
+
+        const final_hash = (btoa(channel_id * -SIA_NUMBER + "/" + message_id * SIA_NUMBER)).replace(/=/g, "");
+        const final_link = `${url.origin}/?file=${final_hash}`;
+        const final_stre = `${url.origin}/?file=${final_hash}&mode=inline`;
+
+        if (fSize <= 50 * 1024 * 1024) {
+            return await sendDocument(message.chat.id, fID);
+        }
+
+        return sendMessage(
+            message.chat.id,
+            message.message_id,
+            `📦 File is too big for Telegram bots.\n\n⬇ Download:\n${final_link}\n\n▶ Stream:\n${final_stre}`
+        );
     }
 
+    // ---------- Owner Only ---------- //
+
     if (message.chat.id != BOT_OWNER) {
-        return sendMessage(message.chat.id, message.message_id, "Access forbidden.\njoin your own bot: https://t.me/Opleech_WD");
+        return sendMessage(message.chat.id, message.message_id, "Access forbidden.");
     }
 
     if (message.document) {
         fID = message.document.file_id;
         fName = message.document.file_name;
         fType = message.document.mime_type.split("/")[0];
+        fSize = message.document.file_size;
         fSave = await sendDocument(BOT_CHANNEL, fID);
+
     } else if (message.audio) {
         fID = message.audio.file_id;
         fName = message.audio.file_name;
         fType = message.audio.mime_type.split("/")[0];
+        fSize = message.audio.file_size;
         fSave = await sendDocument(BOT_CHANNEL, fID);
+
     } else if (message.video) {
         fID = message.video.file_id;
         fName = message.video.file_name;
         fType = message.video.mime_type.split("/")[0];
+        fSize = message.video.file_size;
         fSave = await sendDocument(BOT_CHANNEL, fID);
+
     } else if (message.photo) {
-        fID = message.photo[message.photo.length - 1].file_id;
-        fName = message.photo[message.photo.length - 1].file_unique_id + '.jpg';
-        fType = "image/jpg".split("/")[0];
+        const last = message.photo[message.photo.length - 1];
+        fID = last.file_id;
+        fName = last.file_unique_id + '.jpg';
+        fType = "image";
+        fSize = last.file_size;
         fSave = await sendPhoto(BOT_CHANNEL, fID);
+
     } else {
-        return sendMessage(message.chat.id, message.message_id, "⚡️ Send me any file/video/gif/audio (t<=4GB, e<=20MB)");
+        return sendMessage(message.chat.id, message.message_id, "⚡️ Send me any file/video/gif/audio");
     }
 
-    if (fSave.error_code) { return sendMessage(message.chat.id, message.message_id, fSave.description); }
+    if (fSave.error_code) {
+        return sendMessage(message.chat.id, message.message_id, fSave.description);
+    }
 
     const final_hash = (btoa(fSave.chat.id * -SIA_NUMBER + "/" + fSave.message_id * SIA_NUMBER)).replace(/=/g, "");
     const final_link = `${url.origin}/?file=${final_hash}`;
     const final_stre = `${url.origin}/?file=${final_hash}&mode=inline`;
     const final_tele = `https://t.me/${bot.username}/?start=${final_hash}`;
 
-    // Create the inline keyboard
     const inlineKeyboard = {
         inline_keyboard: [
             [
@@ -293,9 +319,7 @@ async function onMessage(event, message) {
         ]
     };
 
-    // Construct the message text
     let final_text = `*📁 File Name:* \`${fName}\`\n*⚙️ File Hash:* \`${final_hash}\`\n`;
 
-    // Send the message with the inline keyboard
     return sendMessageWithButtons(message.chat.id, message.message_id, final_text, inlineKeyboard);
-}
+        }
