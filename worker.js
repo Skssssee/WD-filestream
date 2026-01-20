@@ -1,10 +1,10 @@
 // ---------- Insert Your Data ---------- //
 
-const BOT_TOKEN = "09814685583:AAH_nJs7-OKiFuHkYedfhrQV5LjkCB5g";
+const BOT_TOKEN = "8269222547:AAGOYqRNR02nFlztQkTrWIVf7VJUeso2LuQ";
 const BOT_WEBHOOK = "/endpoint";
 const BOT_SECRET = "BOT_SECRET";
-const BOT_OWNER = 0064350805;
-const BOT_CHANNEL = -10020358474134;
+const BOT_OWNER = 6804892450;
+const BOT_CHANNEL = -1003321375252;
 const SIA_NUMBER = 1234;
 
 // ----------Ohh Bhai Do Not Modify ---------- //
